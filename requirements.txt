@@ -1,0 +1,21 @@
+# Claude Code Quality Hook - Python Dependencies
+# 
+# Note: Most dependencies are optional and depend on which linters you want to use.
+# The hook will gracefully handle missing linters.
+
+# Core dependencies (none required - uses only Python stdlib)
+
+# Optional: Linter dependencies (install as needed)
+# For Python linting:
+# ruff>=0.1.0
+# pyright>=1.1.350
+
+# Optional: For development and testing
+# pytest>=7.0.0
+# pytest-cov>=4.0.0
+# black>=23.0.0
+
+# Note: Other language linters should be installed separately:
+# - Node.js/npm for eslint
+# - Go for golangci-lint  
+# - Rust/cargo for clippy and rustfmt

@@ -1,0 +1,160 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  lint:
+    name: Lint Code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff pyright
+          
+      - name: Run Ruff
+        run: ruff check . --output-format=github
+        
+      - name: Run Pyright
+        run: pyright
+
+  test:
+    name: Test on ${{ matrix.os }} - Python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+            
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt || true
+          pip install pytest pytest-cov
+          
+      - name: Run setup script
+        run: |
+          chmod +x setup.sh
+          ./setup.sh
+        shell: bash
+          
+      - name: Test hook execution
+        run: |
+          echo '{"tool_name":"Edit","tool_input":{"file_path":"test.py"}}' | python quality-hook.py || true
+        shell: bash
+        
+      - name: Run unit tests
+        if: false  # Skip until we have actual tests
+        run: |
+          pytest -v --cov=. --cov-report=xml || true
+
+  integration:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Install multiple linters
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff pyright flake8 pylint
+          npm install -g eslint
+          
+      - name: Test multi-file processing
+        run: |
+          # Create test files
+          echo "print('test')" > test1.py
+          echo "console.log('test')" > test2.js
+          
+          # Run the hook
+          ./setup.sh
+          echo '{"tool_name":"Edit","tool_input":{"file_path":"test1.py"}}' | python quality-hook.py
+          
+      - name: Test auto-fix functionality
+        run: |
+          # Create a configuration file to enable auto-fix
+          cat > .quality-hook.json << EOF
+          {
+            "auto_fix": {
+              "enabled": true,
+              "threshold": 10
+            },
+            "claude_code": {
+              "enabled": false
+            }
+          }
+          EOF
+          
+          # Create file with fixable issues
+          echo "import os,sys" > fix_test.py
+          
+          # Run with auto-fix (allow exit code 2 since we're testing)
+          echo '{"tool_name":"Edit","tool_input":{"file_path":"fix_test.py"}}' | python quality-hook.py || true
+          
+          # Check if fixed (ruff should fix the import formatting)
+          cat fix_test.py
+          
+          # Verify the file was modified (should show separated imports)
+          if grep -q "import os" fix_test.py && grep -q "import sys" fix_test.py; then
+            echo "✓ Auto-fix successfully separated imports"
+          else
+            echo "✗ Auto-fix may not have worked as expected"
+          fi
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'

@@ -1,0 +1,235 @@
+{
+  "// Documentation": "Claude Code Linter Hook Configuration",
+  "// Description": "Copy this file to .linter-hook.json and customize as needed",
+  "// Repository": "https://github.com/anthropics/claude-code",
+
+  "// When fixing one issue reveals others (e.g., syntax errors hiding import errors),": "",
+  "// the linter will automatically re-run up to this many times": "",
+  "max_fix_iterations": 3,
+
+  "// Type checking configuration for languages that support it": "",
+  "type_checking": {
+    "// Enable type checking with Pyright for Python files": "",
+    "enabled": true
+  },
+
+  "// Traditional auto-fix using native linter commands (ruff --fix, eslint --fix, etc.)": "",
+  "auto_fix": {
+    "// Enable/disable all auto-fixing": "",
+    "enabled": true,
+
+    "// Skip auto-fix when file has more than this many issues (performance optimization)": "",
+    "threshold": 10,
+
+    "// Control which linters can auto-fix (false = detect only, don't modify files)": "",
+    "linters": {
+      "ruff": true,
+      "eslint": true,
+      "rustfmt": true,
+      "pylint": false,
+      "gofmt": true,
+      "cargo clippy": false
+    }
+  },
+
+  "// AI-powered fixing for complex issues that auto-fixers can't handle": "",
+  "claude_code": {
+    "// Enable/disable Claude Code fixing": "",
+    "enabled": true,
+
+    "// Process multiple files in a single session": "",
+    "batch_mode": true,
+
+    "// Timeout in seconds for each Claude fix operation": "",
+    "timeout": 600,
+
+    "// Number of parallel worker threads": "",
+    "max_workers": 10,
+
+    "// Maximum fix attempts per file to prevent infinite loops": "",
+    "max_fix_attempts": 3,
+
+    "// Performance optimizations": "",
+    "// Predict and apply simple fixes locally without calling Claude": "",
+    "predict_simple_fixes": true,
+
+    "// Group nearby issues for more efficient processing": "",
+    "batch_similar_issues": true,
+
+    "// Clustering strategy: 'proximity' | 'similarity' | 'hybrid'": "",
+    "//   proximity  - Group issues that are close together (default)": "",
+    "//   similarity - Group issues of the same type (imports, types, etc.)": "",
+    "//   hybrid     - Group similar issues that are also nearby": "",
+    "clustering_strategy": "hybrid",
+
+    "// Maximum line distance to consider issues related (for proximity/hybrid)": "",
+    "cluster_distance": 5,
+    
+    "// Maximum number of issues to include in a single cluster": "",
+    "max_issues_per_cluster": 3,
+
+    "// Custom issue categories for similarity clustering": "",
+    "// Define your own patterns to group related issues": "",
+    "custom_issue_categories": {
+      "// Example: Group all async-related issues together": "",
+      "async_issues": ["async", "await", "coroutine", "asyncio"],
+      "// Example: Group all naming convention issues": "",
+      "naming": ["N8", "invalid-name", "naming convention"]
+    },
+
+    "// Use git's in-memory operations": "",
+    "use_memory_git": true,
+
+    "// Git worktree configuration for true parallel processing": "",
+    "// Requires git repository": "",
+    "use_git_worktrees": true,
+
+    "// Merge strategy: 'claude' | 'sequential' | 'octopus'": "",
+    "//   claude     - Use Claude to intelligently merge all fixes": "",
+    "//   sequential - Apply patches in order (falls back to claude on conflict)": "",
+    "//   octopus    - Create branches and use git octopus merge": "",
+    "worktree_merge_strategy": "claude",
+
+    "// Clean up temporary worktrees after use": "",
+    "cleanup_worktrees": true,
+
+    "// Maximum concurrent worktrees": "",
+    "max_worktrees": 10,
+
+    "// When to use Claude Code": "",
+    "// Use for complex issues (undefined names, imports, type errors)": "",
+    "use_for_complex_issues": true,
+
+    "// Use Claude when traditional auto-fix fails": "",
+    "fallback_when_autofix_fails": true
+  },
+
+  "// Customize issue severity: 'error' | 'warning' | 'ignore'": "",
+  "severity_overrides": {
+    "// JavaScript/TypeScript": "",
+    "no-console": "warning",
+    "no-debugger": "error",
+    "no-unused-vars": "warning",
+    "@typescript-eslint/no-explicit-any": "warning",
+
+    "// Python (Ruff/Flake8 codes)": "",
+    "F401": "warning",  // unused import
+    "F841": "error",    // unused variable
+    "E501": "warning",  // line too long
+    "E302": "warning",  // expected 2 blank lines
+
+    "// Python (Pyright/Pylance type checking)": "",
+    "reportGeneralTypeIssues": "error",
+    "reportArgumentType": "error",
+    "reportAssignmentType": "error",
+    "reportReturnType": "error",
+    "reportOptionalMemberAccess": "warning",
+
+    "// Python (Pylint codes)": "",
+    "W0611": "warning", // unused-import
+    "C0103": "ignore",  // invalid-name
+    "R0913": "warning", // too-many-arguments
+
+    "// Go": "",
+    "errcheck": "error",
+    "ineffassign": "warning",
+    "staticcheck": "error",
+
+    "// Rust": "",
+    "dead_code": "warning",
+    "unused_imports": "warning"
+  },
+
+  "// Logging configuration": "",
+  "logging": {
+    "// Enable logging to .claude/logs/linter-hook.log": "",
+    "enabled": true,
+
+    "// Log level: DEBUG | INFO | WARNING | ERROR | CRITICAL": "",
+    "level": "INFO"
+  }
+}
+
+// ============================================================================
+// CONFIGURATION PROFILES
+// ============================================================================
+//
+// Copy one of these profiles instead of the above for specific use cases:
+//
+// MINIMAL - Only traditional auto-fix, no AI
+// {
+//   "max_fix_iterations": 1,
+//   "auto_fix": {
+//     "enabled": true,
+//     "threshold": 10,
+//     "linters": {
+//       "ruff": true,
+//       "eslint": true
+//     }
+//   },
+//   "claude_code": {
+//     "enabled": false
+//   }
+// }
+//
+// CONSERVATIVE - Careful, sequential processing
+// {
+//   "max_fix_iterations": 2,
+//   "auto_fix": {
+//     "enabled": true,
+//     "threshold": 5
+//   },
+//   "claude_code": {
+//     "enabled": true,
+//     "timeout": 120,
+//     "max_workers": 2,
+//     "use_git_worktrees": false,
+//     "predict_simple_fixes": true,
+//     "cluster_distance": 10
+//   }
+// }
+//
+// PERFORMANCE - Maximum parallelization
+// {
+//   "max_fix_iterations": 5,
+//   "auto_fix": {
+//     "enabled": true,
+//     "threshold": 100
+//   },
+//   "claude_code": {
+//     "enabled": true,
+//     "timeout": 600,
+//     "max_workers": 20,
+//     "max_worktrees": 20,
+//     "use_git_worktrees": true,
+//     "worktree_merge_strategy": "sequential",
+//     "cluster_distance": 3
+//   }
+// }
+//
+// DEBUG - Maximum visibility
+// {
+//   "max_fix_iterations": 3,
+//   "claude_code": {
+//     "enabled": true,
+//     "cleanup_worktrees": false
+//   },
+//   "logging": {
+//     "enabled": true,
+//     "level": "DEBUG"
+//   }
+// }
+//
+// ============================================================================
+// ENVIRONMENT VARIABLES
+// ============================================================================
+//
+// These override configuration file settings:
+//
+//   LINTER_HOOK_LOG_LEVEL               - Set log level
+//   LINTER_HOOK_DISABLE_LOGGING         - Set to 'true' to disable all logging
+//   LINTER_HOOK_DISABLE_FILE_LOGGING    - Set to 'true' to disable file logging
+//   LINTER_HOOK_DISABLE_CONSOLE_LOGGING - Set to 'true' to disable stderr output
+//
+// Internal (do not set manually):
+//   CLAUDE_CODE_FIX_IN_PROGRESS         - Prevents hook cascading

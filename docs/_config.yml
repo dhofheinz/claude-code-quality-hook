@@ -1,0 +1,5 @@
+theme: jekyll-theme-minimal
+title: Claude Code Quality Hook
+description: Automatic code quality enforcement for Claude Code with AI-powered fixes
+show_downloads: true
+google_analytics:

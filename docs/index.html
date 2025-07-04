@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Code Quality Hook - Automatic Code Quality Enforcement</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.5.0/github-markdown-light.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background: #f6f8fa;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        .header p {
+            margin: 1rem 0 0;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        .nav {
+            background: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        .nav a {
+            color: #0366d6;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav a:hover {
+            color: #0056b3;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        .feature {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .feature:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+        .feature h3 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        .markdown-body {
+            background: white;
+            padding: 3rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-top: 2rem;
+        }
+        .quick-start {
+            background: #f1f8ff;
+            border: 1px solid #c8e1ff;
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        .quick-start h2 {
+            color: #0366d6;
+            margin-top: 0;
+        }
+        pre {
+            background: #f6f8fa !important;
+            border-radius: 6px;
+            padding: 1rem !important;
+            overflow-x: auto;
+        }
+        code {
+            background: #f6f8fa;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-size: 85%;
+        }
+        .github-button {
+            display: inline-block;
+            background: #24292e;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.2s;
+            margin-top: 1rem;
+        }
+        .github-button:hover {
+            background: #1a1e22;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background: #28a745;
+            color: white;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .info {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Claude Code Quality Hook</h1>
+        <p>Automatic code quality enforcement for Claude Code with AI-powered fixes</p>
+    </div>
+
+    <div class="nav">
+        <div class="nav-inner">
+            <a href="#overview">Overview</a>
+            <a href="#features">Features</a>
+            <a href="#installation">Installation</a>
+            <a href="#configuration">Configuration</a>
+            <a href="#architecture">Architecture</a>
+            <a href="https://github.com/dhofheinz/claude-code-quality-hook">GitHub</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="quick-start">
+            <h2>🚀 Quick Start</h2>
+            <p>Get started with Claude Code Quality Hook in under a minute:</p>
+            <pre><code class="language-bash"># Clone the repository
+git clone https://github.com/dhofheinz/claude-code-quality-hook.git
+cd claude-code-quality-hook
+
+# Run setup
+./setup.sh
+
+# That's it! The hook is now active</code></pre>
+            <a href="https://github.com/dhofheinz/claude-code-quality-hook" class="github-button">View on GitHub →</a>
+        </div>
+
+        <h2 id="overview">Overview</h2>
+        <p>Claude Code Quality Hook is a sophisticated PostToolUse hook system that automatically checks code quality (linting, type checking) and fixes issues after Claude Code edits files. It features a three-stage pipeline with traditional auto-fixers and AI-powered Claude Code integration.</p>
+
+        <div class="features" id="features">
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <h3>Multi-Stage Fix Pipeline</h3>
+                <p>Three-stage approach: parallel quality checking, traditional auto-fix, and AI-powered fixing for complex issues.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🤖</div>
+                <h3>AI-Powered Fixes</h3>
+                <p>Leverages Claude Code to fix complex issues that traditional linters can't handle automatically.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔄</div>
+                <h3>Iterative Fixing</h3>
+                <p>Automatically re-runs up to <code>max_fix_iterations</code> times when fixing reveals new issues.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">⚙️</div>
+                <h3>Git Worktree Parallelization</h3>
+                <p>Creates isolated git worktrees for true parallel processing without conflicts.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🎯</div>
+                <h3>Issue Clustering</h3>
+                <p>Groups related issues for context-aware fixes, reducing API calls and improving fix quality.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📊</div>
+                <h3>Multi-Language Support</h3>
+                <p>Supports Python, JavaScript, TypeScript, Go, and Rust with appropriate linters.</p>
+            </div>
+        </div>
+
+        <div class="info">
+            <strong>🔒 Security First:</strong> The hook includes path validation, command sanitization, timeout enforcement, and backup creation before modifications.
+        </div>
+
+        <div class="markdown-body">
+            <h2 id="architecture">System Architecture</h2>
+            <pre><code>┌─────────────────────────────────────────────────────────────┐
+│                     Claude Code Editor                      │
+└─────────────────────┬───────────────────────────────────────┘
+                      │ PostToolUse Event
+                      ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    quality-hook.py                          │
+│  • Input parsing & file extraction                          │
+│  • Parallel quality checking orchestration                  │
+│  • Multi-stage fix pipeline                                 │
+└─────────────────────┬───────────────────────────────────────┘
+                      │
+        ┌─────────────┴─────────────┐
+        ▼                           ▼
+┌───────────────┐         ┌─────────────────┐
+│ Traditional   │         │   Claude Code   │
+│  Auto-Fix     │         │     Fixer       │
+│ (auto_fix.py) │         │(claude_code_    │
+│               │         │    fixer.py)    │
+└───────────────┘         └─────────────────┘</code></pre>
+
+            <h3>Execution Flow</h3>
+            <p>The system follows an iterative approach to ensure all issues are fixed:</p>
+            <ol>
+                <li><strong>Parallel Linting</strong>: Multiple files checked concurrently using ThreadPoolExecutor</li>
+                <li><strong>Traditional Auto-Fix</strong>: Fast deterministic fixes using native linter commands</li>
+                <li><strong>AI-Powered Fixing</strong>: Claude Code handles complex issues with predictive fixes and clustering</li>
+                <li><strong>Re-lint & Iterate</strong>: Automatically re-runs up to <code>max_fix_iterations</code> times</li>
+            </ol>
+
+            <h2 id="installation">Installation</h2>
+            <h3>Prerequisites</h3>
+            <ul>
+                <li>Python 3.8+</li>
+                <li>Claude Code CLI installed and configured</li>
+                <li>Git (for worktree features)</li>
+                <li>At least one linter installed (ruff, eslint, etc.)</li>
+            </ul>
+
+            <h3>Setup</h3>
+            <ol>
+                <li>Clone the repository</li>
+                <li>Run <code>./setup.sh</code> to create configuration files and register the hook</li>
+                <li>The hook will automatically activate for all file edits in Claude Code</li>
+            </ol>
+
+            <h2 id="configuration">Configuration</h2>
+            <p>Create a <code>.quality-hook.json</code> file in your project root:</p>
+            <pre><code class="language-json">{
+  "max_fix_iterations": 3,
+  "auto_fix": {
+    "enabled": true,
+    "threshold": 10,
+    "linters": {
+      "ruff": true,
+      "eslint": true,
+      "rustfmt": true
+    }
+  },
+  "claude_code": {
+    "enabled": true,
+    "use_git_worktrees": true,
+    "worktree_merge_strategy": "claude",
+    "predict_simple_fixes": true,
+    "cluster_distance": 5
+  }
+}</code></pre>
+
+            <h3>Supported Linters</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Language</th>
+                        <th>Primary Linter</th>
+                        <th>Auto-Fix Support</th>
+                        <th>Type Checking</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Python (.py)</td>
+                        <td>ruff</td>
+                        <td>✅ Yes</td>
+                        <td>✅ pyright</td>
+                    </tr>
+                    <tr>
+                        <td>JavaScript (.js, .jsx)</td>
+                        <td>eslint</td>
+                        <td>✅ Yes</td>
+                        <td>❌ No</td>
+                    </tr>
+                    <tr>
+                        <td>TypeScript (.ts, .tsx)</td>
+                        <td>eslint</td>
+                        <td>✅ Yes</td>
+                        <td>✅ Built-in</td>
+                    </tr>
+                    <tr>
+                        <td>Go (.go)</td>
+                        <td>golangci-lint</td>
+                        <td>❌ No</td>
+                        <td>✅ Built-in</td>
+                    </tr>
+                    <tr>
+                        <td>Rust (.rs)</td>
+                        <td>cargo clippy</td>
+                        <td>✅ Yes (rustfmt)</td>
+                        <td>✅ Built-in</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Advanced Features</h2>
+            
+            <h3>Type Checking Integration</h3>
+            <p>The system now includes comprehensive type checking alongside traditional linting:</p>
+            <ul>
+                <li><strong>Pyright/Pylance:</strong> Automatic type checking for Python files</li>
+                <li><strong>Type Error Detection:</strong> Identifies type mismatches, missing arguments, undefined variables</li>
+                <li><strong>AI-Powered Fixes:</strong> Claude Code can fix complex type issues automatically</li>
+                <li><strong>Configurable Strictness:</strong> Use pyrightconfig.json for project-specific settings</li>
+            </ul>
+
+            <h3>Issue Clustering</h3>
+            <p>The system intelligently groups related issues to provide better context for fixes:</p>
+            <ul>
+                <li><strong>Proximity clustering:</strong> Groups issues within N lines of each other</li>
+                <li><strong>Similarity clustering:</strong> Groups issues by type (imports, types, undefined, etc.)</li>
+                <li><strong>Hybrid clustering:</strong> Combines proximity and similarity for optimal grouping</li>
+            </ul>
+
+            <h3>Predictive Fixes</h3>
+            <p>Common issues are fixed locally without API calls:</p>
+            <pre><code class="language-python">simple_fix_patterns = {
+    'F821': {  # Undefined name
+        'json': 'import json',
+        'datetime': 'from datetime import datetime',
+        'Path': 'from pathlib import Path',
+        'List': 'from typing import List',
+        'Dict': 'from typing import Dict',
+        'Optional': 'from typing import Optional',
+    },
+    'F841': {  # Unused variable
+        '_pattern': 'prefix_with_underscore'
+    }
+}</code></pre>
+
+            <h3>Git Worktree Merge Strategies</h3>
+            <ol>
+                <li><strong>Claude merge (default):</strong> Uses AI to intelligently merge multiple fixes</li>
+                <li><strong>Sequential merge:</strong> Applies patches one by one with 3-way merge</li>
+                <li><strong>Octopus merge:</strong> Uses git's multi-branch merge for complex scenarios</li>
+            </ol>
+
+            <div class="warning">
+                <strong>⚠️ Note:</strong> When using git worktrees, ensure your files are committed to git (at least staged with <code>git add</code>).
+            </div>
+
+            <h2>Key Implementation Details</h2>
+            
+            <h3>Hook Cascading Prevention</h3>
+            <p>The system sets <code>CLAUDE_CODE_FIX_IN_PROGRESS</code> environment variable to prevent infinite loops when Claude fixes trigger more edits.</p>
+
+            <h3>Complex Issue Detection</h3>
+            <p>Issues that trigger AI-powered fixes include:</p>
+            <ul>
+                <li>Type errors: <code>reportArgumentType</code>, <code>reportMissingTypeArgument</code></li>
+                <li>Undefined references: <code>undefined</code>, <code>NameError</code></li>
+                <li>Import errors: <code>ImportError</code>, <code>ModuleNotFoundError</code></li>
+                <li>Complex refactoring needs</li>
+            </ul>
+
+            <h3>Performance Optimizations</h3>
+            <ul>
+                <li><strong>Parallel Processing:</strong> ThreadPoolExecutor with configurable workers</li>
+                <li><strong>Configuration Caching:</strong> Cached config files with mtime checking</li>
+                <li><strong>Smart Batching:</strong> Issue clustering reduces API calls</li>
+                <li><strong>Local Predictions:</strong> Common fixes applied without Claude</li>
+                <li><strong>Git Worktrees:</strong> True parallel fixing without conflicts</li>
+            </ul>
+
+            <h2>Troubleshooting</h2>
+            
+            <h3>Enable Debug Logging</h3>
+            <pre><code class="language-json">{
+  "logging": {
+    "enabled": true,
+    "level": "DEBUG"
+  }
+}</code></pre>
+            <p>Check logs at <code>.claude/logs/quality-hook.log</code></p>
+
+            <h3>Common Issues</h3>
+            <ul>
+                <li><strong>"Linter not found":</strong> Ensure PATH includes ~/.local/bin, ~/.npm-global/bin</li>
+                <li><strong>"No progress made":</strong> Often due to circular dependencies or logical code issues</li>
+                <li><strong>"Worktree creation failed":</strong> Ensure files are committed to git</li>
+            </ul>
+
+            <h2>Example Use Cases</h2>
+
+            <h3>Syntax Error Cascading</h3>
+            <pre><code>Initial state: File with syntax error hiding other issues
+Iteration 1: Fix syntax error
+Iteration 2: Now 10 import errors are revealed
+Iteration 3: All issues resolved
+Total time: ~10 seconds</code></pre>
+
+            <h3>Complex Type Fixes</h3>
+            <pre><code class="language-python"># Before - Type error detected by Pyright
+def process(data):
+    result: str = calculate_sum(1, 2)  # Error: int != str
+    return result.upper()
+
+# After - Claude Code fixes
+def process(data: Any) -> str:
+    result: int = calculate_sum(1, 2)
+    return str(result).upper()</code></pre>
+
+            <h3>Parallel Import Fixes</h3>
+            <pre><code>File: large_module.py
+Issues: 15 undefined names across 500 lines
+Strategy: 3 clusters created, fixed in parallel
+Result: All imports added in ~5 seconds</code></pre>
+
+            <h2>Contributing</h2>
+            <p>Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.</p>
+
+            <h2>License</h2>
+            <p>This project is licensed under the MIT License. See the LICENSE file for details.</p>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+</body>
+</html>

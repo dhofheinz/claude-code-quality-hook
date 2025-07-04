@@ -1,0 +1,44 @@
+{
+  "max_fix_iterations": 3,
+  "type_checking": {
+    "enabled": true
+  },
+  "auto_fix": {
+    "enabled": true,
+    "threshold": 10,
+    "linters": {
+      "ruff": true,
+      "eslint": true,
+      "rustfmt": true,
+      "pylint": false
+    }
+  },
+  "claude_code": {
+    "enabled": true,
+    "batch_mode": true,
+    "timeout": 600,
+    "max_workers": 5,
+    "use_for_complex_issues": true,
+    "fallback_when_autofix_fails": true,
+    "predict_simple_fixes": true,
+    "batch_similar_issues": true,
+    "clustering_strategy": "hybrid",
+    "cluster_distance": 5,
+    "max_issues_per_cluster": 3,
+    "max_fix_attempts": 3,
+    "use_git_worktrees": true,
+    "worktree_merge_strategy": "claude",
+    "cleanup_worktrees": true,
+    "max_worktrees": 5
+  },
+  "severity_overrides": {
+    "no-console": "warning",
+    "max-line-length": "warning",
+    "missing-docstring": "ignore",
+    "F841": "error"
+  },
+  "logging": {
+    "enabled": true,
+    "level": "DEBUG"
+  }
+}

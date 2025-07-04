@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+venv/
+env/
+.venv/
+.env
+
+# Testing
+.coverage
+.pytest_cache/
+*.cover
+htmlcov/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Claude Code specific
+.claude/
+!.claude/settings.json.example
+
+# Linter caches
+.ruff_cache/
+.mypy_cache/
+.eslintcache
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# User-specific configuration (uncomment if you want to keep your config private)
+# .quality-hook.json
+# But we recommend committing .quality-hook.json to share team configuration
