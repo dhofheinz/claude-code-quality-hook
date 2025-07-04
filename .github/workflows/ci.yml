@@ -106,6 +106,7 @@ jobs:
           echo "console.log('test')" > test2.js
           
           # Run the hook
+          chmod +x setup.sh
           ./setup.sh
           echo '{"tool_name":"Edit","tool_input":{"file_path":"test1.py"}}' | python quality-hook.py
           
